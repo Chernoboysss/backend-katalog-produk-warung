@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement()) // ID unik
+  email     String   @unique                     // Email harus unik
+  password  String                                // Password pengguna
+  createdAt DateTime @default(now())             // Timestamp saat dibuat
+  updatedAt DateTime @updatedAt                  // Timestamp saat diperbarui
+  products  Product[]                            // Relasi ke tabel Product
+}
+
+model Product {
+  id       Int      @id @default(autoincrement()) // ID unik
+  name     String                                // Nama produk
+  image    String                                // URL gambar produk
+  size     String                                // Ukuran produk (misalnya: S, M, L)
+  price    Float                                 // Harga produk
+  qty      Int                                   // Kuantitas produk
+  userId   Int                                   // Foreign key ke User
+  user     User     @relation(fields: [userId], references: [id]) // Relasi ke tabel User
+  createdAt DateTime @default(now())             // Timestamp saat dibuat
+  updatedAt DateTime @updatedAt                  // Timestamp saat diperbarui
+}
